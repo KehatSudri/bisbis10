@@ -1,6 +1,9 @@
 package com.att.tdp.bisbis10.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,8 +13,15 @@ public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
+    @NotBlank(message = "Description is mandatory")
     private String description;
+
+    @NotNull(message = "Price is mandatory")
+    @Positive(message = "Price must be greater than 0")
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

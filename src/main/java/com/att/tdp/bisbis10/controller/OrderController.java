@@ -3,6 +3,7 @@ package com.att.tdp.bisbis10.controller;
 import com.att.tdp.bisbis10.dto.OrderDTO;
 import com.att.tdp.bisbis10.entity.Order;
 import com.att.tdp.bisbis10.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
         Order createdOrder = orderService.createOrder(orderDTO.getRestaurantId(), orderDTO.getOrderItems());
         return new ResponseEntity<>(createdOrder, HttpStatus.OK);
     }

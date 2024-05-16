@@ -3,7 +3,7 @@ package com.att.tdp.bisbis10.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -14,11 +14,12 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @NotNull(message = "Name is required")
     private String name;
 
     private double averageRating;
 
+    @NotNull(message = "isKosher is required")
     private boolean isKosher;
 
     @ElementCollection
@@ -65,8 +66,8 @@ public class Restaurant {
         return isKosher;
     }
 
-    public void setIsKosher(boolean isKosher) {
-        this.isKosher = isKosher;
+    public void setKosher(boolean kosher) {
+        isKosher = kosher;
     }
 
     public List<String> getCuisines() {

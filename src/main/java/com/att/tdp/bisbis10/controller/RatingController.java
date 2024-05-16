@@ -2,6 +2,7 @@ package com.att.tdp.bisbis10.controller;
 
 import com.att.tdp.bisbis10.dto.RatingDTO;
 import com.att.tdp.bisbis10.service.RatingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addRating(@RequestBody RatingDTO ratingDTO) {
+    public ResponseEntity<Void> addRating(@Valid @RequestBody RatingDTO ratingDTO) {
         ratingService.addRating(ratingDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

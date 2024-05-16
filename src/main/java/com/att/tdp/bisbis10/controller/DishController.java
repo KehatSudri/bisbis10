@@ -1,6 +1,7 @@
 
 package com.att.tdp.bisbis10.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,13 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addDish(@PathVariable("restaurantId") Long restaurantId, @RequestBody Dish dish) {
+    public ResponseEntity<Void> addDish(@PathVariable("restaurantId") Long restaurantId,@Valid @RequestBody Dish dish) {
         dishService.addDish(restaurantId, dish);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{dishId}")
-    public ResponseEntity<Void> updateDish(@PathVariable("restaurantId") Long restaurantId, @PathVariable("dishId") Long dishId, @RequestBody Dish dish) {
+    public ResponseEntity<Void> updateDish(@PathVariable("restaurantId") Long restaurantId, @PathVariable("dishId") Long dishId, @Valid @RequestBody Dish dish) {
         dishService.updateDish(restaurantId, dishId, dish);
         return new ResponseEntity<>(HttpStatus.OK);
     }
