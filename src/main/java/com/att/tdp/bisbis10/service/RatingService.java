@@ -3,6 +3,7 @@ package com.att.tdp.bisbis10.service;
 import com.att.tdp.bisbis10.dto.RatingDTO;
 import com.att.tdp.bisbis10.entity.Rating;
 import com.att.tdp.bisbis10.entity.Restaurant;
+import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.RatingRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class RatingService {
     public void addRating(RatingDTO ratingDTO) {
         Long restaurantId = ratingDTO.getRestaurantId();
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant Id:" + restaurantId));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
         Rating rating = new Rating();
         rating.setRestaurant(restaurant);
         rating.setValue(ratingDTO.getRating());

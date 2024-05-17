@@ -2,6 +2,8 @@ package com.att.tdp.bisbis10.service;
 
 import com.att.tdp.bisbis10.entity.Dish;
 import com.att.tdp.bisbis10.entity.Restaurant;
+import com.att.tdp.bisbis10.exception.BadRequestException;
+import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.DishRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +25,19 @@ public class DishService {
 
     public void addDish(Long restaurantId, Dish dish) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant Id:" + restaurantId));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
         dish.setRestaurant(restaurant);
         dishRepository.save(dish);
     }
     public void updateDish(Long restaurantId, Long dishId, Dish updatedDish) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
 
         Dish existingDish = dishRepository.findById(dishId)
-                .orElseThrow(() -> new RuntimeException("Dish not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Dish not found with id " + dishId));
 
         if (!existingDish.getRestaurant().equals(restaurant)) {
-            throw new RuntimeException("Dish does not belong to the specified restaurant");
+            throw new BadRequestException("Dish does not belong to the specified restaurant");
         }
 
         existingDish.setDescription(updatedDish.getDescription());
@@ -45,13 +47,13 @@ public class DishService {
     }
     public void deleteDish(Long restaurantId, Long dishId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
 
         Dish existingDish = dishRepository.findById(dishId)
-                .orElseThrow(() -> new RuntimeException("Dish not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Dish not found with id " + dishId));
 
         if (!existingDish.getRestaurant().equals(restaurant)) {
-            throw new RuntimeException("Dish does not belong to the specified restaurant");
+            throw new BadRequestException("Dish does not belong to the specified restaurant");
         }
 
         dishRepository.delete(existingDish);

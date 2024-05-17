@@ -3,6 +3,7 @@ package com.att.tdp.bisbis10.service;
 import com.att.tdp.bisbis10.entity.Order;
 import com.att.tdp.bisbis10.entity.OrderItem;
 import com.att.tdp.bisbis10.entity.Restaurant;
+import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.OrderRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,17 @@ public class OrderService {
 
     public Order createOrder(Long restaurantId, List<OrderItem> orderItems) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
 
         Order order = new Order();
         order.setRestaurant(restaurant);
 
-        orderItems.forEach(orderItem -> {
-            orderItem.setOrder(order);
-            if (orderItem.getDishId() == null) {
-                throw new RuntimeException("DishId cannot be null");
-            }
-        });
+//        orderItems.forEach(orderItem -> {
+//            orderItem.setOrder(order);
+//            if (orderItem.getDishId() == null) {
+//                throw new RuntimeException("DishId cannot be null");
+//            }
+//        });
 
         order.setOrderItems(orderItems);
 
