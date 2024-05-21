@@ -24,7 +24,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
         return buildErrorResponse(e, HttpStatus.NOT_FOUND, request);
     }
-
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBadRequestException(ResourceNotFoundException e, WebRequest request) {
+        return buildErrorResponse(e, HttpStatus.BAD_REQUEST, request);
+    }
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Object> handleSQLException(SQLException e, WebRequest request) {
         return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
@@ -42,12 +45,6 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList()));
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) {
-        return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleTypeMismatch(MethodArgumentTypeMismatchException e, WebRequest request) {
