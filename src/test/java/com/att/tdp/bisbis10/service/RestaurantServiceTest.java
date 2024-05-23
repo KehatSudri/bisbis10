@@ -1,5 +1,6 @@
 package com.att.tdp.bisbis10.service;
 
+import com.att.tdp.bisbis10.dto.RestaurantDTO.AddRestaurantDTO;
 import com.att.tdp.bisbis10.entity.Restaurant;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,10 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 public class RestaurantServiceTest {
@@ -23,55 +25,72 @@ public class RestaurantServiceTest {
     private RestaurantRepository restaurantRepository;
 
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void testGetAllRestaurants() {
-        Restaurant restaurant = new Restaurant();
-        when(restaurantRepository.findAll()).thenReturn(List.of(restaurant));
+        when(restaurantRepository.findAll()).thenReturn(Collections.emptyList());
+
         restaurantService.getAllRestaurants();
+
         verify(restaurantRepository, times(1)).findAll();
     }
 
     @Test
     public void testGetRestaurant() {
         Restaurant restaurant = new Restaurant();
-        when(restaurantRepository.findById(any(Long.class))).thenReturn(Optional.of(restaurant));
+        restaurant.setId(1L);
+        when(restaurantRepository.findById(anyLong())).thenReturn(java.util.Optional.of(restaurant));
+
         restaurantService.getRestaurant(1L);
-        verify(restaurantRepository, times(1)).findById(any(Long.class));
+
+        verify(restaurantRepository, times(1)).findById(anyLong());
     }
 
     @Test
     public void testGetRestaurantsByCuisine() {
         Restaurant restaurant = new Restaurant();
-        when(restaurantRepository.findRestaurantsByCuisinesContains(any(String.class))).thenReturn(List.of(restaurant));
+        restaurant.setId(1L);
+        restaurant.setCuisines(Collections.singletonList("Italian"));
+        when(restaurantRepository.findRestaurantsByCuisinesContains(anyString())).thenReturn(Collections.singletonList(restaurant));
+
         restaurantService.getRestaurantsByCuisine("Italian");
-        verify(restaurantRepository, times(1)).findRestaurantsByCuisinesContains(any(String.class));
+
+        verify(restaurantRepository, times(1)).findRestaurantsByCuisinesContains(anyString());
     }
 
     @Test
     public void testAddRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurantService.addRestaurant(restaurant);
+        AddRestaurantDTO addRestaurantDTO = new AddRestaurantDTO();
+        addRestaurantDTO.setName("Test Restaurant");
+        addRestaurantDTO.setIsKosher(true);
+        addRestaurantDTO.setCuisines(Collections.singletonList("Italian"));
+
+        restaurantService.addRestaurant(addRestaurantDTO);
+
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
     }
 
     @Test
     public void testUpdateRestaurant() {
         Restaurant restaurant = new Restaurant();
-        when(restaurantRepository.findById(any(Long.class))).thenReturn(Optional.of(restaurant));
-        restaurantService.updateRestaurant(1L, restaurant);
-        verify(restaurantRepository, times(1)).findById(any(Long.class));
+        restaurant.setId(1L);
+        when(restaurantRepository.findById(anyLong())).thenReturn(java.util.Optional.of(restaurant));
+
+        List<String> cuisines = Collections.singletonList("Italian");
+        restaurantService.updateRestaurant(1L, cuisines);
+
         verify(restaurantRepository, times(1)).save(any(Restaurant.class));
     }
 
     @Test
     public void testDeleteRestaurant() {
-        when(restaurantRepository.existsById(any(Long.class))).thenReturn(true);
+        when(restaurantRepository.existsById(anyLong())).thenReturn(true);
+
         restaurantService.deleteRestaurant(1L);
-        verify(restaurantRepository, times(1)).existsById(any(Long.class));
-        verify(restaurantRepository, times(1)).deleteById(any(Long.class));
+
+        verify(restaurantRepository, times(1)).deleteById(anyLong());
     }
 }

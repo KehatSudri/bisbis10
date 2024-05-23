@@ -1,35 +1,39 @@
 package com.att.tdp.bisbis10.service;
 
+import com.att.tdp.bisbis10.dto.DishDTO.AddDishDTO;
+import com.att.tdp.bisbis10.dto.DishDTO.UpdateDishDTO;
 import com.att.tdp.bisbis10.entity.Dish;
 import com.att.tdp.bisbis10.entity.Restaurant;
 import com.att.tdp.bisbis10.exception.BadRequestException;
 import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.DishRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class DishService {
 
     private final DishRepository dishRepository;
     private final RestaurantRepository restaurantRepository;
 
-    @Autowired
-    public DishService(DishRepository dishRepository, RestaurantRepository restaurantRepository) {
-        this.dishRepository = dishRepository;
-        this.restaurantRepository = restaurantRepository;
-    }
 
-    public void addDish(Long restaurantId, Dish dish) {
+    public void addDish(Long restaurantId, AddDishDTO addDishDTO) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
+
+        Dish dish = new Dish();
+        dish.setName(addDishDTO.getName());
+        dish.setDescription(addDishDTO.getDescription());
+        dish.setPrice(addDishDTO.getPrice());
         dish.setRestaurant(restaurant);
+
         dishRepository.save(dish);
     }
-    public void updateDish(Long restaurantId, Long dishId, Dish updatedDish) {
+    public void updateDish(Long restaurantId, Long dishId, UpdateDishDTO updateDishDTO) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
 
@@ -40,8 +44,8 @@ public class DishService {
             throw new BadRequestException("Dish does not belong to the specified restaurant");
         }
 
-        existingDish.setDescription(updatedDish.getDescription());
-        existingDish.setPrice(updatedDish.getPrice());
+        existingDish.setDescription(updateDishDTO.getDescription());
+        existingDish.setPrice(updateDishDTO.getPrice());
 
         dishRepository.save(existingDish);
     }

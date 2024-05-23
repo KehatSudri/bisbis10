@@ -1,5 +1,8 @@
 package com.att.tdp.bisbis10.controller;
 
+import com.att.tdp.bisbis10.dto.RestaurantDTO.AddRestaurantDTO;
+import com.att.tdp.bisbis10.dto.RestaurantDTO.GetRestaurantDTO;
+import com.att.tdp.bisbis10.dto.RestaurantDTO.UpdateRestaurantDTO;
 import com.att.tdp.bisbis10.entity.Restaurant;
 import com.att.tdp.bisbis10.service.RestaurantService;
 import org.junit.jupiter.api.Test;
@@ -10,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -30,10 +33,6 @@ public class RestaurantControllerTest {
     public void testGetRestaurant() {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
-        restaurant.setAverageRating(4.5);
-        restaurant.setKosher(true);
-        restaurant.setCuisines(Collections.singletonList("Italian"));
 
         when(restaurantService.getRestaurant(anyLong())).thenReturn(restaurant);
 
@@ -48,59 +47,46 @@ public class RestaurantControllerTest {
     public void testGetRestaurantsByCuisine() {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
-        restaurant.setAverageRating(4.5);
-        restaurant.setKosher(true);
-        restaurant.setCuisines(Collections.singletonList("Italian"));
 
         when(restaurantService.getRestaurantsByCuisine(anyString())).thenReturn(Collections.singletonList(restaurant));
         when(restaurantService.getAllRestaurants()).thenReturn(Collections.singletonList(restaurant));
 
-        ResponseEntity<List<Restaurant>> response = restaurantController.getRestaurantsByCuisine("Italian");
+        ResponseEntity<List<GetRestaurantDTO>> response = restaurantController.getRestaurantsByCuisine("Italian");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+        assertEquals(1, response.getBody().size());
         verify(restaurantService, times(1)).getRestaurantsByCuisine(anyString());
 
         response = restaurantController.getRestaurantsByCuisine(null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+        assertEquals(1, response.getBody().size());
         verify(restaurantService, times(1)).getAllRestaurants();
     }
 
     @Test
     public void testAddRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
-        restaurant.setAverageRating(4.5);
-        restaurant.setKosher(true);
-        restaurant.setCuisines(Collections.singletonList("Italian"));
+        AddRestaurantDTO addRestaurantDTO = new AddRestaurantDTO();
 
-        doNothing().when(restaurantService).addRestaurant(any(Restaurant.class));
+        doNothing().when(restaurantService).addRestaurant(any(AddRestaurantDTO.class));
 
-        ResponseEntity<Void> response = restaurantController.addRestaurant(restaurant);
+        ResponseEntity<Void> response = restaurantController.addRestaurant(addRestaurantDTO);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        verify(restaurantService, times(1)).addRestaurant(any(Restaurant.class));
+        verify(restaurantService, times(1)).addRestaurant(any(AddRestaurantDTO.class));
     }
 
     @Test
     public void testUpdateRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
-        restaurant.setAverageRating(4.5);
-        restaurant.setKosher(true);
-        restaurant.setCuisines(Collections.singletonList("Italian"));
+        UpdateRestaurantDTO updateRestaurantDTO = new UpdateRestaurantDTO();
+        updateRestaurantDTO.setCuisines(Arrays.asList("Italian", "Mexican"));
 
-        doNothing().when(restaurantService).updateRestaurant(anyLong(), any(Restaurant.class));
+        doNothing().when(restaurantService).updateRestaurant(anyLong(), anyList());
 
-        ResponseEntity<Void> response = restaurantController.updateRestaurant(1L, restaurant);
+        ResponseEntity<Void> response = restaurantController.updateRestaurant(1L, updateRestaurantDTO);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(restaurantService, times(1)).updateRestaurant(anyLong(), any(Restaurant.class));
+        verify(restaurantService, times(1)).updateRestaurant(anyLong(), anyList());
     }
 
     @Test

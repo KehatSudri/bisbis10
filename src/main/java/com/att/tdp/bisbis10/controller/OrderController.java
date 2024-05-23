@@ -1,27 +1,29 @@
 package com.att.tdp.bisbis10.controller;
 
-import com.att.tdp.bisbis10.dto.OrderDTO;
+import com.att.tdp.bisbis10.dto.CreateOrderDTO;
 import com.att.tdp.bisbis10.entity.Order;
 import com.att.tdp.bisbis10.service.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
 
-    @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
     @PostMapping
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        Order createdOrder = orderService.createOrder(orderDTO.getRestaurantId(), orderDTO.getOrderItems());
-        return new ResponseEntity<>(createdOrder, HttpStatus.OK);
+    public ResponseEntity<Map<String, UUID>> createOrder(@Valid @RequestBody CreateOrderDTO createOrderDTO) {
+        UUID orderId = orderService.createOrder(createOrderDTO);
+        Map<String, UUID> response = Collections.singletonMap("orderId", orderId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

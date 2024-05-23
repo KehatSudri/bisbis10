@@ -1,5 +1,7 @@
 package com.att.tdp.bisbis10.controller;
 
+import com.att.tdp.bisbis10.dto.DishDTO.AddDishDTO;
+import com.att.tdp.bisbis10.dto.DishDTO.UpdateDishDTO;
 import com.att.tdp.bisbis10.entity.Dish;
 import com.att.tdp.bisbis10.service.DishService;
 import org.junit.jupiter.api.Test;
@@ -28,30 +30,29 @@ public class DishControllerTest {
     @Test
     public void testAddDish() {
         Long restaurantId = 1L;
-        Dish dish = new Dish();
-        dish.setName("Test Dish");
+        AddDishDTO addDishDTO = new AddDishDTO();
+        addDishDTO.setName("Test Dish");
 
-        doNothing().when(dishService).addDish(restaurantId, dish);
+        doNothing().when(dishService).addDish(restaurantId, addDishDTO);
 
-        ResponseEntity<Void> response = dishController.addDish(restaurantId, dish);
+        ResponseEntity<Void> response = dishController.addDish(restaurantId, addDishDTO);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        verify(dishService, times(1)).addDish(restaurantId, dish);
+        verify(dishService, times(1)).addDish(restaurantId, addDishDTO);
     }
 
     @Test
     public void testUpdateDish() {
         Long restaurantId = 1L;
         Long dishId = 1L;
-        Dish dish = new Dish();
-        dish.setName("Updated Dish");
+        UpdateDishDTO updateDishDTO = new UpdateDishDTO();
 
-        doNothing().when(dishService).updateDish(restaurantId, dishId, dish);
+        doNothing().when(dishService).updateDish(restaurantId, dishId, updateDishDTO);
 
-        ResponseEntity<Void> response = dishController.updateDish(restaurantId, dishId, dish);
+        ResponseEntity<Void> response = dishController.updateDish(restaurantId, dishId, updateDishDTO);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(dishService, times(1)).updateDish(restaurantId, dishId, dish);
+        verify(dishService, times(1)).updateDish(restaurantId, dishId, updateDishDTO);
     }
 
     @Test
@@ -70,9 +71,7 @@ public class DishControllerTest {
     @Test
     public void testGetDishesByRestaurant() {
         Long restaurantId = 1L;
-        Dish dish = new Dish();
-        dish.setName("Test Dish");
-        List<Dish> dishes = Collections.singletonList(dish);
+        List<Dish> dishes = Collections.singletonList(new Dish());
 
         when(dishService.getDishesByRestaurant(restaurantId)).thenReturn(dishes);
 

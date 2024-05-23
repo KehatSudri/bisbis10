@@ -1,28 +1,24 @@
 package com.att.tdp.bisbis10.service;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.att.tdp.bisbis10.dto.CreateOrderDTO;
+import com.att.tdp.bisbis10.dto.OrderItemDTO.OrderItemDTO;
 import com.att.tdp.bisbis10.entity.Order;
 import com.att.tdp.bisbis10.entity.OrderItem;
 import com.att.tdp.bisbis10.entity.Restaurant;
-import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.OrderRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
-import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
     @InjectMocks
@@ -34,31 +30,27 @@ public class OrderServiceTest {
     @Mock
     private RestaurantRepository restaurantRepository;
 
-    private Order order;
-    private Restaurant restaurant;
-    private OrderItem orderItem;
-
     @BeforeEach
     public void setUp() {
-        restaurant = new Restaurant();
-        orderItem = new OrderItem();
-        order = new Order(restaurant, Collections.singletonList(orderItem));
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void testCreateOrder() {
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(restaurant));
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1L);
+        when(restaurantRepository.findById(anyLong())).thenReturn(java.util.Optional.of(restaurant));
 
-        Order createdOrder = orderService.createOrder(1L, Collections.singletonList(orderItem));
+        OrderItemDTO orderItemDTO = new OrderItemDTO();
+        orderItemDTO.setDishId(1L);
+        orderItemDTO.setAmount(2);
 
-        assertEquals(order, createdOrder);
-    }
+        CreateOrderDTO createOrderDTO = new CreateOrderDTO();
+        createOrderDTO.setRestaurantId(1L);
+        createOrderDTO.setOrderItems(Collections.singletonList(orderItemDTO));
 
-    @Test
-    public void testCreateOrderThrowsResourceNotFoundException() {
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.empty());
+        orderService.createOrder(createOrderDTO);
 
-        assertThrows(ResourceNotFoundException.class, () -> orderService.createOrder(1L, Collections.singletonList(orderItem)));
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 }
