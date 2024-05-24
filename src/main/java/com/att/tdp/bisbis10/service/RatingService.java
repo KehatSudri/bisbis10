@@ -11,13 +11,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * This is a service class for the Rating entity
+ * It uses RatingRepository and RestaurantRepository to provide service operations for the Rating entity
+ * It includes methods to add ratings
+ */
 @RequiredArgsConstructor
 @Service
 public class RatingService {
 
+    /**
+     * Repository for managing ratings in the database
+     */
     private final RatingRepository ratingRepository;
+
+    /**
+     * Repository for managing restaurants in the database
+     */
     private final RestaurantRepository restaurantRepository;
 
+    /**
+     * Adds a new rating for a specific restaurant
+     * @param addRatingDTO the data transfer object containing the details of the rating to be added
+     */
     public void addRating(AddRatingDTO addRatingDTO) {
         Long restaurantId = addRatingDTO.getRestaurantId();
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
@@ -28,6 +44,7 @@ public class RatingService {
         ratingRepository.save(rating);
 
         List<Rating> ratings = ratingRepository.findByRestaurant(restaurant);
+        // Calculate the average rating
         double averageRating = ratings.stream()
                 .mapToDouble(Rating::getValue)
                 .average()

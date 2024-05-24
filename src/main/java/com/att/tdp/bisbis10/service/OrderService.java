@@ -16,14 +16,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This is a service class for the Order entity
+ * It uses OrderRepository, RestaurantRepository, and DishRepository to provide service operations for the Order entity
+ * It includes methods to create orders
+ */
 @RequiredArgsConstructor
 @Service
 public class OrderService {
 
+    /**
+     * Repository for managing orders in the database
+     */
     private final OrderRepository orderRepository;
-    private final RestaurantRepository restaurantRepository;
-    private final DishRepository dishRepository; // Add DishRepository
 
+    /**
+     * Repository for managing restaurants in the database
+     */
+    private final RestaurantRepository restaurantRepository;
+
+    /**
+     * Repository for managing dishes in the database
+     */
+    private final DishRepository dishRepository;
+
+    /**
+     * Creates a new order for a specific restaurant
+     * @param createOrderDTO the data transfer object containing the details of the order to be created
+     * @return the ID of the created order
+     */
     public UUID createOrder(CreateOrderDTO createOrderDTO) {
         Restaurant restaurant = restaurantRepository.findById(createOrderDTO.getRestaurantId())
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + createOrderDTO.getRestaurantId()));
@@ -33,7 +54,7 @@ public class OrderService {
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDTO orderItemDTO : createOrderDTO.getOrderItems()) {
-            if (!dishRepository.existsById(orderItemDTO.getDishId())) { // Check if dishId exists
+            if (!dishRepository.existsById(orderItemDTO.getDishId())) {
                 throw new ResourceNotFoundException("Dish not found with id " + orderItemDTO.getDishId());
             }
 
