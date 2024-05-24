@@ -17,7 +17,6 @@ public class RestaurantService {
 
 
     public List<Restaurant> getAllRestaurants() {
-        System.out.println("Getting all restaurants");
         return restaurantRepository.findAll();
     }
 

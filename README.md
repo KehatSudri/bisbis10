@@ -67,4 +67,4 @@ For your convenience, compose.yml includes Postgresql DB, the app is already poi
 5. On completion, send your repo link to the rm-tdpisraelhomework@intl.att.com email, (a snapshot will be taken from your repo once you submit the homework). please do not update your repo after you submit the homework.
 )
 
-![Postgres DB ERD Schema](https://ibb.co/MgXpv6w)
+![Postgres DB ERD Schema](https://imgur.com/a/5ovHlY5)

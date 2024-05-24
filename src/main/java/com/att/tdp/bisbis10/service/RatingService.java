@@ -7,7 +7,6 @@ import com.att.tdp.bisbis10.exception.ResourceNotFoundException;
 import com.att.tdp.bisbis10.repository.RatingRepository;
 import com.att.tdp.bisbis10.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
